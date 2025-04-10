@@ -20,6 +20,9 @@ HF_MODELS = [
     "Flan-T5 SM",
     "Flan-T5 LG",
     "Flan-T5 XL",
+    "Llama-2 7B",
+    "Llama-2 13B",
+    "Llama-2 70B"
 ]
 OPENAI_MODELS = [
     "text-curie-001", 
