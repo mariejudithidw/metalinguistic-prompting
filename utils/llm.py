@@ -18,7 +18,7 @@ def load_mt(model_name="google/flan-t5-small", device="cpu", **kwargs):
         print(f"Successfully loaded tokenizer ({model_name})")
 
     elif "llama" in model_name.lower():
-        # Explicitly load LLaMA 2 with gated access
+        # Explicitly load Llama 2 with gated access
         model = AutoModelForCausalLM.from_pretrained(
             model_name,
             use_auth_token=use_auth_token,
