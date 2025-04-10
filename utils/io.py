@@ -64,6 +64,9 @@ def initialize_model(args):
     else:
         if "flan-t5" in args.model:
             model = models.T5_LLM(args.eval_type, args.model, args.seed, device=device)
+        elif "llama" in args.model.lower():
+            openai_api.set_hf_token_from_file(args.key)  # uses same --key arg for HuggingFace token
+            model = models.LLaMA_LLM(args.eval_type, args.model, args.seed, device=device)
         else:
             raise ValueError(
                 f"Model not supported! (Your model: {args.model})"
