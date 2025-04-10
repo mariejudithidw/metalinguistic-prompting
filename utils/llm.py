@@ -21,8 +21,6 @@ def load_mt(model_name="google/flan-t5-small", device="cpu", **kwargs):
         # Explicitly load Llama 2 with gated access
         model = AutoModelForCausalLM.from_pretrained(
             model_name,
-            torch_dtype=torch.float16 if device == "cuda" else torch.float32,
-            device_map="auto" if device == "cuda" else None,
             use_auth_token=use_auth_token,
             **kwargs
         ).to(device)
