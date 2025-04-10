@@ -36,6 +36,9 @@ def pretty_model(model):
         "google/flan-t5-small": "Flan-T5 SM",
         "google/flan-t5-large": "Flan-T5 LG",
         "google/flan-t5-xl": "Flan-T5 XL",
+        "meta-llama/Llama-2-7b-hf": "Llama-2 7B",
+        "meta-llama/Llama-2-13b-hf": "Llama-2 13B",
+        "meta-llama/Llama-2-70b-hf": "Llama-2 70B"
     }
     if model in model_map:
         return model_map[model]
@@ -53,10 +56,14 @@ def pretty_evaltype(eval_type):
 # Hue corresponds to model family; lightness corresponds to size.
 blues = sns.color_palette("Blues")
 reds = sns.color_palette("Reds")
+purples = sns.color_palette("Purples")  # For Llama models
 MODEL_PAL = {
     "Flan-T5 SM": blues[0],
     "Flan-T5 LG": blues[2],
     "Flan-T5 XL": blues[4],
+    "Llama-2 7B": purples[0],
+    "Llama-2 13B": purples[2],
+    "Llama-2 70B": purples[4],
     "text-curie-001": reds[0],
     "text-davinci-002": reds[2],
     "text-davinci-003": reds[4]
