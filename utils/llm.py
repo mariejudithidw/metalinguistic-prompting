@@ -5,16 +5,32 @@ from transformers import (
     T5ForConditionalGeneration
 )
 import torch
+import os
 
 # Helper function for loading Huggingface models and tokenizers.
 def load_mt(model_name="google/flan-t5-small", device="cpu", **kwargs):
+    use_auth_token = os.environ.get("HF_TOKEN", None)
+    
     if "flan-t5" in model_name:
         model = T5ForConditionalGeneration.from_pretrained(model_name, **kwargs).to(device)
         print(f"Successfully loaded model ({model_name})")
         tokenizer = T5Tokenizer.from_pretrained(model_name)
         print(f"Successfully loaded tokenizer ({model_name})")
+
+    elif "llama" in model_name.lower():
+        # Explicitly load LLaMA 2 with gated access
+        model = AutoModelForCausalLM.from_pretrained(
+            model_name,
+            torch_dtype=torch.float16 if device == "cuda" else torch.float32,
+            device_map="auto" if device == "cuda" else None,
+            use_auth_token=use_auth_token,
+            **kwargs
+        ).to(device)
+        tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=use_auth_token)
+        print(f"Successfully loaded tokenizer ({model_name})")
+        
     else:
-        print("WARNING: code has only been tested for Flan-T5 Huggingface models")
+        print("WARNING: code has only been tested for Flan-T5 and Llama Huggingface models")
         model = AutoModelForCausalLM.from_pretrained(model_name, **kwargs).to(device)
         print(f"Successfully loaded model ({model_name})")
         tokenizer = AutoTokenizer.from_pretrained(model_name)
