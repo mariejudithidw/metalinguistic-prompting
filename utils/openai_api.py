@@ -14,7 +14,7 @@ def set_key_from_file(key_file):
         key = fp.read()
     openai.api_key = key
 
-# HuggingFace token setup for gated models like LLaMA 2
+# HuggingFace token setup for gated models like Llama 2
 def set_hf_token_from_file(token_file):
     with open(token_file, "r") as fp:
         token = fp.read().strip()
