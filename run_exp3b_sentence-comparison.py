@@ -11,7 +11,6 @@ if __name__ == "__main__":
     
     # Parse command-line arguments.
     args = io.parse_args()
-    batch_size = getattr(args, "batch_size", 1)  # Optional, default to 1
     
     # Set random seed.
     np.random.seed(args.seed)
