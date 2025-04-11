@@ -37,9 +37,7 @@ if __name__ == "__main__":
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ MAIN LOOP
     results = []
     
-    for i in tqdm(range(0, len(df), batch_size), desc="Processing in batches"):
-        batch_df = df.iloc[i:i + batch_size]
-
+    with torch.no_grad():
         for _, row in batch_df.iterrows():
             good_sentence = row.good_sentence
             bad_sentence = row.bad_sentence
