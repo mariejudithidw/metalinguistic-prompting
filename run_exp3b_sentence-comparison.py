@@ -38,8 +38,8 @@ if __name__ == "__main__":
     
     with torch.no_grad():
         for _, row in tqdm(list(df.iterrows()), total=len(df.index)):
-        good_sentence = row.good_sentence
-        bad_sentence = row.bad_sentence
+            good_sentence = row.good_sentence
+            bad_sentence = row.bad_sentence
 
             if args.eval_type == "direct":
                 # Get full-sentence probabilities.
