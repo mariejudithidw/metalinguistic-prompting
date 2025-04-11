@@ -6,6 +6,14 @@ from tqdm import tqdm
 
 from utils import io
 
+import torch
+import gc
+
+# Before anything heavy loads
+torch.cuda.empty_cache()
+gc.collect()
+torch.cuda.reset_peak_memory_stats()
+
 if __name__ == "__main__":
     TASK = "sentence_comparison"
     
@@ -110,6 +118,10 @@ if __name__ == "__main__":
                     )
 
             results.append(res)
+
+            # clear memory explicitly
+            torch.cuda.empty_cache()
+            gc.collect()
 
     # Combine meta information with model results into one dict.
     output = {
