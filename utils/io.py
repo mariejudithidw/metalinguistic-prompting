@@ -43,6 +43,8 @@ def parse_args():
                         help="Path to save output JSON file")
     parser.add_argument("--dist_folder", type=str, default=None,
                         help="(OPTIONAL) path to folder to save distribution files (as .npy)")
+    parser.add_argument("--batch_size", type=int, default=1,
+                        help="Batch size for evaluation (default = 1)")
     args = parser.parse_args()
     return args
 
