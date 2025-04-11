@@ -30,7 +30,8 @@ run_experiment () {
         --model_type "hf" \
         --option_order ${OPTION_ORDER} \
         --eval_type ${EVAL_TYPE} \
-        --data_file $DATAFILE --out_file ${OUTFILE}
+        --data_file $DATAFILE --out_file ${OUTFILE} \
+        --batch_size 1
         # Uncomment the line below to save full distributions.
         # --dist_folder $DISTFOLDER
 }
