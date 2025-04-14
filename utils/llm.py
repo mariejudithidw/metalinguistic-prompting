@@ -38,8 +38,7 @@ def load_mt(model_name="google/flan-t5-small", device="cpu", **kwargs):
                 raise RuntimeError("CUDA not available, switching to CPU")
 
         except Exception as e:
-            print("⚠️ Could not load LLaMA model on GPU — falling back to CPU.")
-            print(f"   Reason: {e}")
+            print("Could not load LLaMA model on GPU — falling back to CPU.")
             torch.cuda.empty_cache()
 
             model = AutoModelForCausalLM.from_pretrained(
