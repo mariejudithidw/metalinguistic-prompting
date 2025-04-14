@@ -269,7 +269,7 @@ class Llama_LLM(LLM):
 
          # Debugging: Print device of model, inputs, and full_input_ids
         print(f"Model device: {self._model.device}")
-        print(f"Input device: {full_input.device}")
+        print(f"Input device: {full_input_ids.device}")
         print(f"Full input IDs device: {full_input_ids.device}")
 
 
