@@ -225,7 +225,7 @@ class T5_LLM(LLM):
         np.save(path, dist)
 
 class Llama_LLM(LLM):
-    def __init__(self, eval_type, model, seed, device="cpu"):
+    def __init__(self, eval_type, model, seed, device="cpu", ignore_special_logprobs=True):
         super().__init__(eval_type, model, seed, device=device)
         self._model, self._tokenizer = load_mt(model_name=self.model, device=self.device)
         self._model.eval()
