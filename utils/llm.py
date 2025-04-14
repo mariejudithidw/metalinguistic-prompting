@@ -28,11 +28,7 @@ def load_mt(model_name="google/flan-t5-small", device="cpu", **kwargs):
                 torch_dtype=torch.float16,
                 use_auth_token=use_auth_token,
                 **kwargs
-                )
-                tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=use_auth_token)
-                device = "gpu"
-                model = model.to(device)
-                print(f"Successfully loaded tokenizer ({model_name})")
+                ).to(device)
         else:
             print("GPU unavailable — falling back to CPU")
             model = AutoModelForCausalLM.from_pretrained(
@@ -41,11 +37,10 @@ def load_mt(model_name="google/flan-t5-small", device="cpu", **kwargs):
                 device_map={"": "cpu"},
                 use_auth_token=use_auth_token,
                 **kwargs
-                )
-                tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=use_auth_token)
-                device = "cpu"
-                model = model.to(device)
-                print(f"Successfully loaded tokenizer ({model_name})")
+                ).to(device)
+        
+        tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=use_auth_token)
+        print(f"Successfully loaded tokenizer ({model_name})")
         
     else:
         print("WARNING: code has only been tested for Flan-T5 and Llama Huggingface models")
