@@ -267,12 +267,6 @@ class Llama_LLM(LLM):
         full_input = self._tokenizer(prompt, return_tensors="pt").to(self._model.device)
         full_input_ids = full_input.input_ids
 
-         # Debugging: Print device of model, inputs, and full_input_ids
-        print(f"Model device: {self._model.device}")
-        print(f"Input device: {full_input_ids.device}")
-        print(f"Full input IDs device: {full_input_ids.device}")
-
-
         with torch.no_grad():
             outputs = self._model(**full_input, labels=full_input_ids)
             log_probs = torch.nn.functional.log_softmax(outputs.logits, dim=-1)
