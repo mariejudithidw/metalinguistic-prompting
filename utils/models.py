@@ -145,7 +145,7 @@ class T5_LLM(LLM):
             
             # Subset the labels and logprobs we care about,
             # i.e. the non-"special" tokens (e.g., "<extra_id_0>").
-            mask = torch.BoolTensor([tok_id not in self.ids_to_ignore for tok_id in labels[0]]).to(self.device)
+            mask = torch.BoolTensor([tok_id not in self.ids_to_ignore for tok_id in labels[0]])
             relevant_labels = labels[0][mask]
             relevant_logprobs = logprobs[0][mask]
             
@@ -270,7 +270,7 @@ class Llama_LLM(LLM):
             
             # Subset the labels and logprobs we care about,
             # i.e. the non-"special" tokens (e.g., "<extra_id_0>").
-            mask = torch.BoolTensor([tok_id not in self.ids_to_ignore for tok_id in labels[0]]).to(self.device)
+            mask = torch.BoolTensor([tok_id not in self.ids_to_ignore for tok_id in labels[0]])
             relevant_labels = labels[0][mask]
             relevant_logprobs = logprobs[0][mask]
             
