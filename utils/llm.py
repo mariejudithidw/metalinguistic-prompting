@@ -19,22 +19,23 @@ def load_mt(model_name="google/flan-t5-small", device="cpu", **kwargs):
         print(f"Successfully loaded tokenizer ({model_name})")
 
     elif "llama" in model_name.lower():
-        if torch.cuda.is_available() and device == "cuda":
-            quantization_config = BitsAndBytesConfig(load_in_8bit=True)
-            model = AutoModelForCausalLM.from_pretrained(
-                model_name,
-                device_map="auto",
-                quantization_config=quantization_config,
-                torch_dtype=torch.float16,
-                use_auth_token=use_auth_token,
-                **kwargs
-            )
+        try:
+            if torch.cuda.is_available() and device == "cuda":
+                quantization_config = BitsAndBytesConfig(load_in_8bit=True)
+                model = AutoModelForCausalLM.from_pretrained(
+                    model_name,
+                    device_map="auto",
+                    quantization_config=quantization_config,
+                    torch_dtype=torch.float16,
+                    use_auth_token=use_auth_token,
+                    **kwargs
+                )
             
-            tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=use_auth_token)
-            print(f"Successfully loaded tokenizer ({model_name})")
+                tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=use_auth_token)
+                print(f"Successfully loaded tokenizer ({model_name})")
         
-        else:
-            raise RuntimeError("CUDA not available, switching to CPU")
+            else:
+                raise RuntimeError("CUDA not available, switching to CPU")
 
         except Exception as e:
             print("⚠️ Could not load LLaMA model on GPU — falling back to CPU.")
