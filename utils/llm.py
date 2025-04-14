@@ -28,19 +28,31 @@ def load_mt(model_name="google/flan-t5-small", device="cpu", **kwargs):
                 torch_dtype=torch.float16,
                 use_auth_token=use_auth_token,
                 **kwargs
-                ).to(device)
+            )
+            
+            tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=use_auth_token)
+            print(f"Successfully loaded tokenizer ({model_name})")
+        
         else:
-            print("GPU unavailable — falling back to CPU")
+            raise RuntimeError("CUDA not available, switching to CPU")
+
+        except Exception as e:
+            print("⚠️ Could not load LLaMA model on GPU — falling back to CPU.")
+            print(f"   Reason: {e}")
+            torch.cuda.empty_cache()
+
             model = AutoModelForCausalLM.from_pretrained(
                 model_name,
                 torch_dtype=torch.float32,
                 device_map={"": "cpu"},
                 use_auth_token=use_auth_token,
                 **kwargs
-                ).to(device)
-        
-        tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=use_auth_token)
-        print(f"Successfully loaded tokenizer ({model_name})")
+            )
+            
+            tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=use_auth_token)
+            device = torch.device("cpu")
+            model = model.to(device)
+            print(f"Successfully loaded tokenizer ({model_name})")
         
     else:
         print("WARNING: code has only been tested for Flan-T5 and Llama Huggingface models")
