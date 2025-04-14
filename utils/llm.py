@@ -19,37 +19,33 @@ def load_mt(model_name="google/flan-t5-small", device="cpu", **kwargs):
         print(f"Successfully loaded tokenizer ({model_name})")
 
     elif "llama" in model_name.lower():
-        try:
-            if torch.cuda.is_available() and device == "cuda":
-                quantization_config = BitsAndBytesConfig(load_in_8bit=True)
-                model = AutoModelForCausalLM.from_pretrained(
-                    model_name,
-                    device_map="auto",
-                    quantization_config=quantization_config,
-                    use_auth_token=use_auth_token,
-                    **kwargs
+        if torch.cuda.is_available() and device == "cuda":
+            quantization_config = BitsAndBytesConfig(load_in_8bit=True)
+            model = AutoModelForCausalLM.from_pretrained(
+                model_name,
+                device_map="auto",
+                quantization_config=quantization_config,
+                torch_dtype=torch.float16,
+                use_auth_token=use_auth_token,
+                **kwargs
                 )
                 tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=use_auth_token)
+                device = "gpu"
+                model = model.to(device)
                 print(f"Successfully loaded tokenizer ({model_name})")
-            else:
-                raise RuntimeError("Forcing CPU load")
-
-        except (torch.cuda.OutOfMemoryError, RuntimeError) as e:
-            print("Could not load on GPU — falling back to CPU.")
-            print(f"   Reason: {e}")
-            torch.cuda.empty_cache()
+        else:
+            print("GPU unavailable — falling back to CPU")
             model = AutoModelForCausalLM.from_pretrained(
                 model_name,
                 torch_dtype=torch.float32,
+                device_map={"": "cpu"},
                 use_auth_token=use_auth_token,
                 **kwargs
-            )
-            tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=use_auth_token)
-            device = "cpu"
-            model = model.to(device)
-            print(f"Successfully loaded tokenizer ({model_name})")
-
-        return model, tokenizer
+                )
+                tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=use_auth_token)
+                device = "cpu"
+                model = model.to(device)
+                print(f"Successfully loaded tokenizer ({model_name})")
         
     else:
         print("WARNING: code has only been tested for Flan-T5 and Llama Huggingface models")
