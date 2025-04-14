@@ -18,16 +18,36 @@ def load_mt(model_name="google/flan-t5-small", device="cpu", **kwargs):
         print(f"Successfully loaded tokenizer ({model_name})")
 
     elif "llama" in model_name.lower():
-        # Explicitly load Llama 2 with gated access
-        model = AutoModelForCausalLM.from_pretrained(
-            model_name,
-            torch_dtype=torch.float16 if device == "cuda" else torch.float32,
-            device_map="auto" if device == "cuda" else None,
-            use_auth_token=use_auth_token,
-            **kwargs
-        ).to(device)
-        tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=use_auth_token)
-        print(f"Successfully loaded tokenizer ({model_name})")
+        try:
+            if torch.cuda.is_available() and device == "cuda":
+                model = AutoModelForCausalLM.from_pretrained(
+                    model_name,
+                    torch_dtype=torch.float16,
+                    device_map="auto",
+                    use_auth_token=use_auth_token,
+                    **kwargs
+                )
+                tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=use_auth_token)
+                print(f"Successfully loaded tokenizer ({model_name})")
+            else:
+                raise RuntimeError("Forcing CPU load")
+
+        except (torch.cuda.OutOfMemoryError, RuntimeError) as e:
+            print("Could not load on GPU — falling back to CPU.")
+            print(f"   Reason: {e}")
+            torch.cuda.empty_cache()
+            model = AutoModelForCausalLM.from_pretrained(
+                model_name,
+                torch_dtype=torch.float32,
+                use_auth_token=use_auth_token,
+                **kwargs
+            )
+            tokenizer = AutoTokenizer.from_pretrained(model_name, use_auth_token=use_auth_token)
+            device = "cpu"
+            model = model.to(device)
+            print(f"Successfully loaded tokenizer ({model_name})")
+
+        return model, tokenizer
         
     else:
         print("WARNING: code has only been tested for Flan-T5 and Llama Huggingface models")
