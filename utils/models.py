@@ -264,7 +264,7 @@ class Llama_LLM(LLM):
                                     **kwargs):
         prompt = make_prompt(prefix, continuation, eval_type=self.eval_type, task=task, options=options)
         
-        full_input = self._tokenizer(prompt, return_tensors="pt").to(self.device)
+        full_input = self._tokenizer(prompt, return_tensors="pt").to(self._model.device)
         full_input_ids = full_input.input_ids
 
          # Debugging: Print device of model, inputs, and full_input_ids
