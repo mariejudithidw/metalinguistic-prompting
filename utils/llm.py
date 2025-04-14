@@ -21,10 +21,11 @@ def load_mt(model_name="google/flan-t5-small", device="cpu", **kwargs):
     elif "llama" in model_name.lower():
         try:
             if torch.cuda.is_available() and device == "cuda":
+                quantization_config = BitsAndBytesConfig(load_in_8bit=True)
                 model = AutoModelForCausalLM.from_pretrained(
                     model_name,
-                    load_in_4bit=True,
                     device_map="auto",
+                    quantization_config=quantization_config,
                     use_auth_token=use_auth_token,
                     **kwargs
                 )
