@@ -233,7 +233,7 @@ class Llama_LLM(LLM):
     def get_full_sentence_logprob(self, sentence, **kwargs):
         # Tokenize sentence
         inputs = self._tokenizer(sentence, return_tensors="pt").to(self.device)
-        input_ids = inputs.input_ids
+        input_ids = inputs.input_ids.to(self.device)
 
         # Get logits from model
         with torch.no_grad():
@@ -261,7 +261,7 @@ class Llama_LLM(LLM):
         prompt = make_prompt(prefix, continuation, eval_type=self.eval_type, task=task, options=options)
         
         full_input = self._tokenizer(prompt, return_tensors="pt").to(self.device)
-        full_input_ids = full_input.input_ids
+        full_input_ids = full_input.input_ids.to(self.device)
 
         with torch.no_grad():
             outputs = self._model(**full_input, labels=full_input_ids)
@@ -271,7 +271,7 @@ class Llama_LLM(LLM):
         decoded = self._tokenizer.batch_decode(full_input_ids[0])
         tokens = self._tokenizer.convert_ids_to_tokens(full_input_ids[0])
 
-        continuation_ids = self._tokenizer(" " + continuation, return_tensors="pt").input_ids[0][1:]
+        continuation_ids = self._tokenizer(" " + continuation, return_tensors="pt").input_ids[0][1:].to(self.device)
         n = len(continuation_ids)
         
         # Get logprobs for continuation tokens
