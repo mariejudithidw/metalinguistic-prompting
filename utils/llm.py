@@ -2,7 +2,8 @@ from transformers import (
     AutoModelForCausalLM, 
     AutoTokenizer, 
     T5Tokenizer, 
-    T5ForConditionalGeneration
+    T5ForConditionalGeneration,
+    BitsAndBytesConfig
 )
 import torch
 import os
@@ -22,7 +23,7 @@ def load_mt(model_name="google/flan-t5-small", device="cpu", **kwargs):
             if torch.cuda.is_available() and device == "cuda":
                 model = AutoModelForCausalLM.from_pretrained(
                     model_name,
-                    torch_dtype=torch.float16,
+                    load_in_4bit=True,
                     device_map="auto",
                     use_auth_token=use_auth_token,
                     **kwargs
