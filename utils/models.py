@@ -233,7 +233,11 @@ class Llama_LLM(LLM):
     def get_full_sentence_logprob(self, sentence, **kwargs):
         # Tokenize sentence
         inputs = self._tokenizer(sentence, return_tensors="pt").to(self.device)
-        input_ids = inputs.input_ids.to(self.device)
+        input_ids = inputs.input_ids
+          
+        # Debugging: Print device of model and inputs
+        print(f"Model device: {self._model.device}")
+        print(f"Input device: {inputs.device}")
 
         # Get logits from model
         with torch.no_grad():
@@ -261,7 +265,13 @@ class Llama_LLM(LLM):
         prompt = make_prompt(prefix, continuation, eval_type=self.eval_type, task=task, options=options)
         
         full_input = self._tokenizer(prompt, return_tensors="pt").to(self.device)
-        full_input_ids = full_input.input_ids.to(self.device)
+        full_input_ids = full_input.input_ids
+
+         # Debugging: Print device of model, inputs, and full_input_ids
+        print(f"Model device: {self._model.device}")
+        print(f"Input device: {full_input.device}")
+        print(f"Full input IDs device: {full_input_ids.device}")
+
 
         with torch.no_grad():
             outputs = self._model(**full_input, labels=full_input_ids)
